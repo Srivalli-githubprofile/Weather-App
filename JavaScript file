@@ -1,0 +1,30 @@
+const apiKey = 'YOUR_API_KEY'; // Replace with your actual API key
+const weatherInfo = document.getElementById('weatherInfo');
+
+async function getWeather() {
+    const cityInput = document.getElementById('cityInput');
+    const city = cityInput.value.trim();
+
+    if (city !== '') {
+        try {
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+            const data = await response.json();
+
+            if (data.cod === '404') {
+                weatherInfo.innerHTML = '<p>City not found. Please enter a valid city name.</p>';
+            } else {
+                const temperature = data.main.temp;
+                const description = data.weather[0].description;
+
+                weatherInfo.innerHTML = `<p>${city} Weather:</p>
+                                         <p>Temperature: ${temperature} °C</p>
+                                         <p>Description: ${description}</p>`;
+            }
+        } catch (error) {
+            console.error('Error fetching weather data:', error);
+            weatherInfo.innerHTML = '<p>An error occurred. Please try again later.</p>';
+        }
+    } else {
+        weatherInfo.innerHTML = '<p>Please enter a city name.</p>';
+    }
+}
